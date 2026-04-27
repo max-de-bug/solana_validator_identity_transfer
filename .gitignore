@@ -1,0 +1,47 @@
+# ========================
+# Dependencies
+# ========================
+node_modules/
+
+# ========================
+# Build outputs
+# ========================
+# Rust
+backend/target/
+
+# Next.js
+frontend/.next/
+frontend/out/
+
+# ========================
+# Environment & Secrets
+# ========================
+.env
+.env.local
+.env.*.local
+backend/.env
+backend/data/*.db
+backend/data/*.db-shm
+backend/data/*.db-wal
+
+# ========================
+# OS & Editor artifacts
+# ========================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# ========================
+# Turborepo
+# ========================
+.turbo/
+
+# ========================
+# Misc
+# ========================
+*.log
+npm-debug.log*
+pnpm-debug.log*

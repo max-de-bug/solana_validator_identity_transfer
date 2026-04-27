@@ -1,0 +1,16 @@
+{
+  "name": "solana-validator-identity-transfer",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "turbo": "latest"
+  }
+}
