@@ -56,10 +56,10 @@ function StatusContent() {
     <main className="flex-1 pt-24 pb-16 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
-          <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-3xl sm:text-4xl font-bold mb-3">
-            <span className="gradient-text">Transfer Status</span>
+          <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-3xl sm:text-4xl font-bold text-zinc-900 mb-3">
+            Transfer Status
           </motion.h1>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} className="text-[var(--color-text-secondary)]">
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} className="text-zinc-500">
             Check the status of a transfer using the token
           </motion.p>
         </div>
@@ -67,10 +67,10 @@ function StatusContent() {
         <AnimatePresence>
           {error && (
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mb-6">
-              <div className="flex items-start gap-3 p-4 rounded-xl bg-[rgba(239,68,68,0.1)] border border-[rgba(239,68,68,0.3)]">
-                <AlertTriangle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-                <p className="text-sm text-red-300 flex-1">{error}</p>
-                <button onClick={() => setError("")}><X className="w-4 h-4 text-red-400" /></button>
+              <div className="flex items-start gap-3 p-4 rounded-lg bg-red-50 border border-red-200">
+                <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                <p className="text-sm text-red-700 flex-1">{error}</p>
+                <button onClick={() => setError("")} className="text-red-400 hover:text-red-600"><X className="w-4 h-4" /></button>
               </div>
             </motion.div>
           )}
@@ -80,7 +80,7 @@ function StatusContent() {
         <div className="card mb-6">
           <div className="flex gap-3">
             <input className="input-field font-mono text-sm flex-1" placeholder="Enter transfer token" value={token} onChange={(e) => setToken(e.target.value)} onKeyDown={(e) => e.key === "Enter" && checkStatus()} />
-            <button onClick={() => checkStatus()} disabled={loading} className="btn-primary flex items-center gap-2 shrink-0">
+            <button onClick={() => checkStatus()} disabled={loading} className="btn-primary shrink-0">
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
               Check
             </button>
@@ -98,8 +98,8 @@ function StatusContent() {
                   return (
                     <>
                       <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-lg font-semibold flex items-center gap-2">
-                          <Shield className="w-5 h-5 text-[#6366f1]" /> Transfer Details
+                        <h2 className="text-lg font-semibold text-zinc-900 flex items-center gap-2">
+                          <Shield className="w-5 h-5 text-indigo-500" /> Transfer Details
                         </h2>
                         <span className={`badge ${badge.class}`}>
                           <BadgeIcon className="w-3.5 h-3.5" /> {badge.label}
@@ -107,38 +107,38 @@ function StatusContent() {
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-                        <div className="p-3 rounded-lg bg-[var(--color-bg-input)] border border-[var(--color-border)]">
-                          <p className="text-xs text-[var(--color-text-muted)] mb-1">Transfer ID</p>
-                          <p className="text-xs font-mono text-[var(--color-text-secondary)] break-all">{status.transfer_id}</p>
+                        <div className="p-3 rounded-lg bg-zinc-50 border border-zinc-200">
+                          <p className="text-xs text-zinc-400 mb-1">Transfer ID</p>
+                          <p className="text-xs font-mono text-zinc-600 break-all">{status.transfer_id}</p>
                         </div>
-                        <div className="p-3 rounded-lg bg-[var(--color-bg-input)] border border-[var(--color-border)]">
-                          <p className="text-xs text-[var(--color-text-muted)] mb-1">Status</p>
-                          <p className="text-sm font-semibold capitalize">{status.is_expired ? "expired" : status.status}</p>
+                        <div className="p-3 rounded-lg bg-zinc-50 border border-zinc-200">
+                          <p className="text-xs text-zinc-400 mb-1">Status</p>
+                          <p className="text-sm font-semibold capitalize text-zinc-900">{status.is_expired ? "expired" : status.status}</p>
                         </div>
-                        <div className="p-3 rounded-lg bg-[var(--color-bg-input)] border border-[var(--color-border)]">
-                          <p className="text-xs text-[var(--color-text-muted)] mb-1">Created</p>
-                          <p className="text-xs font-mono text-[var(--color-text-secondary)]">{new Date(status.created_at).toLocaleString()}</p>
+                        <div className="p-3 rounded-lg bg-zinc-50 border border-zinc-200">
+                          <p className="text-xs text-zinc-400 mb-1">Created</p>
+                          <p className="text-xs font-mono text-zinc-600">{new Date(status.created_at).toLocaleString()}</p>
                         </div>
-                        <div className="p-3 rounded-lg bg-[var(--color-bg-input)] border border-[var(--color-border)]">
-                          <p className="text-xs text-[var(--color-text-muted)] mb-1">Expires</p>
-                          <p className="text-xs font-mono text-[var(--color-text-secondary)]">{new Date(status.expires_at).toLocaleString()}</p>
+                        <div className="p-3 rounded-lg bg-zinc-50 border border-zinc-200">
+                          <p className="text-xs text-zinc-400 mb-1">Expires</p>
+                          <p className="text-xs font-mono text-zinc-600">{new Date(status.expires_at).toLocaleString()}</p>
                         </div>
                         {status.source_pubkey && (
-                          <div className="p-3 rounded-lg bg-[var(--color-bg-input)] border border-[var(--color-border)] sm:col-span-2">
-                            <p className="text-xs text-[var(--color-text-muted)] mb-1">Validator Pubkey</p>
-                            <p className="text-xs font-mono text-[#14f195] break-all">{status.source_pubkey}</p>
+                          <div className="p-3 rounded-lg bg-zinc-50 border border-zinc-200 sm:col-span-2">
+                            <p className="text-xs text-zinc-400 mb-1">Validator Pubkey</p>
+                            <p className="text-xs font-mono text-indigo-600 break-all">{status.source_pubkey}</p>
                           </div>
                         )}
                         {status.downloaded_at && (
-                          <div className="p-3 rounded-lg bg-[var(--color-bg-input)] border border-[var(--color-border)] sm:col-span-2">
-                            <p className="text-xs text-[var(--color-text-muted)] mb-1">Downloaded At</p>
-                            <p className="text-xs font-mono text-[var(--color-text-secondary)]">{new Date(status.downloaded_at).toLocaleString()}</p>
+                          <div className="p-3 rounded-lg bg-zinc-50 border border-zinc-200 sm:col-span-2">
+                            <p className="text-xs text-zinc-400 mb-1">Downloaded At</p>
+                            <p className="text-xs font-mono text-zinc-600">{new Date(status.downloaded_at).toLocaleString()}</p>
                           </div>
                         )}
                       </div>
 
                       <div className="flex gap-3">
-                        <button onClick={() => checkStatus()} className="btn-secondary flex-1 flex items-center justify-center gap-2">
+                        <button onClick={() => checkStatus()} className="btn-secondary flex-1 justify-center">
                           <RefreshCw className="w-4 h-4" /> Refresh
                         </button>
                         {status.status === "pending" && !status.is_expired && (
@@ -162,9 +162,9 @@ function StatusContent() {
 
 export default function StatusPage() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-zinc-50 grainy">
       <Navbar />
-      <Suspense fallback={<div className="flex-1 pt-24 pb-16 px-4 flex items-center justify-center"><Loader2 className="w-8 h-8 text-[#6366f1] animate-spin" /></div>}>
+      <Suspense fallback={<div className="flex-1 pt-24 pb-16 px-4 flex items-center justify-center"><Loader2 className="w-8 h-8 text-indigo-500 animate-spin" /></div>}>
         <StatusContent />
       </Suspense>
       <Footer />

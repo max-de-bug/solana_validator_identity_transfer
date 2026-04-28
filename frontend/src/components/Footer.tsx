@@ -1,76 +1,57 @@
 "use client";
 
-import { Shield, ExternalLink, Heart } from "lucide-react";
 import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <footer className="border-t border-zinc-200">
+      <div className="max-w-wrapper py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="md:col-span-2">
-            <div className="flex items-center gap-3 mb-4">
-              <Shield className="w-7 h-7 text-[#6366f1]" />
-              <span className="text-lg font-bold gradient-text">
-                ValidatorShift
-              </span>
-            </div>
-            <p className="text-sm text-[var(--color-text-secondary)] max-w-md leading-relaxed">
+            <Link href="/" className="inline-flex items-center font-semibold text-zinc-900 mb-4">
+              <span className="text-lg">validator</span>
+              <span className="text-lg gradient-text">shift.</span>
+            </Link>
+            <p className="text-sm text-zinc-500 max-w-sm leading-relaxed mt-3">
               Securely transfer your Solana validator identity between servers
-              using military-grade AES-256-GCM encryption. Built with zero-knowledge
-              architecture — your keys never touch our servers in plaintext.
+              using military-grade AES-256-GCM encryption. Your private keys
+              never touch our servers.
             </p>
-            <div className="mt-4 flex items-center gap-2 text-xs text-[var(--color-text-muted)]">
-              <span>Built with</span>
-              <Heart className="w-3 h-3 text-red-400 fill-red-400" />
-              <span>by</span>
+            <p className="text-xs text-zinc-400 mt-4">
+              Built by{" "}
               <a
                 href="https://superteam.fun"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="gradient-text-solana font-semibold hover:opacity-80 transition-opacity"
+                className="text-indigo-500 hover:text-indigo-600 font-medium transition-colors"
               >
                 Superteam Ukraine
               </a>
-            </div>
+            </p>
           </div>
 
           {/* Quick links */}
           <div>
-            <h4 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4 uppercase tracking-wider">
-              Transfer
-            </h4>
-            <ul className="space-y-2">
+            <h4 className="text-sm font-semibold text-zinc-900 mb-4">Transfer</h4>
+            <ul className="space-y-2.5">
               <li>
-                <Link
-                  href="/transfer/send"
-                  className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
-                >
+                <Link href="/transfer/send" className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">
                   Send Identity
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/transfer/receive"
-                  className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
-                >
+                <Link href="/transfer/receive" className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">
                   Receive Identity
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/transfer/status"
-                  className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
-                >
+                <Link href="/transfer/status" className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">
                   Check Status
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/validator/info"
-                  className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
-                >
+                <Link href="/validator/info" className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">
                   Validator Lookup
                 </Link>
               </li>
@@ -79,28 +60,25 @@ export default function Footer() {
 
           {/* Resources */}
           <div>
-            <h4 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4 uppercase tracking-wider">
-              Resources
-            </h4>
-            <ul className="space-y-2">
+            <h4 className="text-sm font-semibold text-zinc-900 mb-4">Resources</h4>
+            <ul className="space-y-2.5">
               <li>
                 <a
                   href="https://docs.solanalabs.com/operations/guides/validator-start"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+                  className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors"
                 >
                   Solana Docs
                 </a>
               </li>
               <li>
                 <a
-                  href="https://github.com"
+                  href="https://github.com/max-de-bug/solana_validator_identity_transfer"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+                  className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors"
                 >
-                  <ExternalLink className="w-3.5 h-3.5" />
                   Source Code
                 </a>
               </li>
@@ -109,7 +87,7 @@ export default function Footer() {
                   href="https://superteam.fun"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+                  className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors"
                 >
                   Superteam
                 </a>
@@ -119,15 +97,13 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-10 pt-6 border-t border-[var(--color-border)] flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-[var(--color-text-muted)]">
+        <div className="mt-10 pt-6 border-t border-zinc-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <p className="text-xs text-zinc-400">
             © {new Date().getFullYear()} ValidatorShift. Open source under MIT License.
           </p>
-          <div className="flex items-center gap-4">
-            <span className="badge badge-downloaded text-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#10b981] animate-pulse-dot inline-block" />
-              Mainnet
-            </span>
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse-dot" />
+            <span className="text-xs text-zinc-500 font-medium">Mainnet</span>
           </div>
         </div>
       </div>

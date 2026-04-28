@@ -51,7 +51,7 @@ export default function SendPage() {
   const strength = getPassphraseStrength(store.passphrase);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-zinc-50 grainy">
       <Navbar />
       <main className="flex-1 pt-24 pb-16 px-4">
         <div className="max-w-2xl mx-auto">
@@ -86,8 +86,8 @@ export default function SendPage() {
                     style={{
                       background:
                         stepIndex(store.step) > i
-                          ? "linear-gradient(90deg, #10b981, #14f195)"
-                          : "var(--color-border)",
+                          ? "linear-gradient(90deg, #4f46e5, #7c3aed)"
+                          : "#e4e4e7",
                     }}
                   />
                 )}
@@ -103,12 +103,12 @@ export default function SendPage() {
               <motion.div key="upload" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
                 <div className="card">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-lg font-semibold flex items-center gap-2">
-                      <FileKey className="w-5 h-5 text-[#6366f1]" /> Load Validator Keypair
+                    <h2 className="text-lg font-semibold text-zinc-900 flex items-center gap-2">
+                      <FileKey className="w-5 h-5 text-indigo-500" /> Load Validator Keypair
                     </h2>
                     <button
                       onClick={() => store.setPasteMode(!store.pasteMode)}
-                      className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-accent)]"
+                      className="text-xs text-zinc-500 hover:text-indigo-600 font-medium transition-colors"
                     >
                       {store.pasteMode ? "Upload file" : "Paste JSON"}
                     </button>
@@ -117,7 +117,7 @@ export default function SendPage() {
                   {store.pasteMode ? (
                     <div>
                       <textarea
-                        className="textarea-field font-mono text-xs"
+                        className="textarea-field"
                         placeholder="[12, 34, 56, ...]"
                         value={store.pasteContent}
                         onChange={(e) => store.setPasteContent(e.target.value)}
@@ -126,7 +126,7 @@ export default function SendPage() {
                       <button
                         onClick={handlePaste}
                         disabled={!store.pasteContent.trim()}
-                        className="btn-primary w-full mt-4 flex items-center justify-center gap-2"
+                        className="btn-primary w-full mt-4 justify-center"
                       >
                         Parse & Continue <ArrowRight className="w-4 h-4" />
                       </button>
@@ -140,14 +140,14 @@ export default function SendPage() {
                         onDrop={handleDrop}
                         onClick={() => fileInputRef.current?.click()}
                       >
-                        <Upload className="w-10 h-10 text-[var(--color-text-muted)] mx-auto mb-3" />
-                        <p className="text-sm text-[var(--color-text-secondary)] mb-1">
+                        <Upload className="w-10 h-10 text-zinc-400 mx-auto mb-3" />
+                        <p className="text-sm text-zinc-600 mb-1">
                           Drag & drop{" "}
-                          <span className="text-[var(--color-text-primary)] font-medium">
+                          <span className="text-zinc-900 font-medium">
                             validator-keypair.json
                           </span>
                         </p>
-                        <p className="text-xs text-[var(--color-text-muted)]">or click to browse</p>
+                        <p className="text-xs text-zinc-400">or click to browse</p>
                       </div>
                       <input
                         ref={fileInputRef}
@@ -159,9 +159,9 @@ export default function SendPage() {
                     </>
                   )}
 
-                  <div className="mt-6 flex items-start gap-3 p-3 rounded-lg bg-[rgba(99,102,241,0.05)] border border-[rgba(99,102,241,0.15)]">
-                    <Info className="w-4 h-4 text-[#6366f1] shrink-0 mt-0.5" />
-                    <p className="text-xs text-[var(--color-text-secondary)]">
+                  <div className="mt-6 flex items-start gap-3 p-3 rounded-lg bg-indigo-50 border border-indigo-100">
+                    <Info className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
+                    <p className="text-xs text-indigo-700">
                       Your keypair is encrypted in-browser. We never see your private key.
                     </p>
                   </div>
@@ -173,27 +173,27 @@ export default function SendPage() {
             {store.step === "passphrase" && (
               <motion.div key="passphrase" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
                 <div className="card">
-                  <h2 className="text-lg font-semibold flex items-center gap-2 mb-2">
-                    <Lock className="w-5 h-5 text-[#6366f1]" /> Set Encryption Passphrase
+                  <h2 className="text-lg font-semibold text-zinc-900 flex items-center gap-2 mb-2">
+                    <Lock className="w-5 h-5 text-indigo-500" /> Set Encryption Passphrase
                   </h2>
-                  <p className="text-sm text-[var(--color-text-secondary)] mb-6">
+                  <p className="text-sm text-zinc-500 mb-6">
                     You&apos;ll need this same passphrase to decrypt on the destination.
                   </p>
 
                   {store.pubkey && (
-                    <div className="mb-6 p-3 rounded-lg bg-[var(--color-bg-input)] border border-[var(--color-border)]">
+                    <div className="mb-6 p-3 rounded-lg bg-zinc-50 border border-zinc-200">
                       <div className="flex items-center gap-2 mb-1">
-                        <Shield className="w-3.5 h-3.5 text-[#14f195]" />
-                        <span className="text-xs text-[var(--color-text-muted)]">Validator Public Key</span>
+                        <Shield className="w-3.5 h-3.5 text-emerald-500" />
+                        <span className="text-xs text-zinc-500">Validator Public Key</span>
                       </div>
-                      <p className="text-sm font-mono text-[var(--color-text-primary)] break-all">{store.pubkey}</p>
-                      <p className="text-xs text-[var(--color-text-muted)] mt-1">File: {store.fileName}</p>
+                      <p className="text-sm font-mono text-zinc-900 break-all">{store.pubkey}</p>
+                      <p className="text-xs text-zinc-400 mt-1">File: {store.fileName}</p>
                     </div>
                   )}
 
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Passphrase</label>
+                      <label className="block text-sm font-medium text-zinc-700 mb-2">Passphrase</label>
                       <div className="relative">
                         <input
                           type={store.showPass ? "text" : "password"}
@@ -206,14 +206,14 @@ export default function SendPage() {
                         <button
                           type="button"
                           onClick={() => store.setShowPass(!store.showPass)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600"
                         >
                           {store.showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Confirm Passphrase</label>
+                      <label className="block text-sm font-medium text-zinc-700 mb-2">Confirm Passphrase</label>
                       <input
                         type={store.showPass ? "text" : "password"}
                         className="input-field"
@@ -224,7 +224,7 @@ export default function SendPage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Token Expiry</label>
+                      <label className="block text-sm font-medium text-zinc-700 mb-2">Token Expiry</label>
                       <select
                         className="input-field"
                         value={store.expiryMinutes}
@@ -244,18 +244,18 @@ export default function SendPage() {
                       <div className="progress-bar">
                         <div className="progress-bar-fill" style={{ width: `${strength.percent}%` }} />
                       </div>
-                      <p className="text-xs text-[var(--color-text-muted)] mt-1">
+                      <p className="text-xs text-zinc-500 mt-1">
                         {strength.label} — {store.passphrase.length} chars
                       </p>
                     </div>
                   )}
 
                   <div className="flex gap-3 mt-6">
-                    <button onClick={store.reset} className="btn-secondary flex-1">Back</button>
+                    <button onClick={store.reset} className="btn-secondary flex-1 justify-center">Back</button>
                     <button
                       onClick={store.encryptAndSend}
                       disabled={store.passphrase.length < 8 || store.passphrase !== store.confirmPassphrase}
-                      className="btn-primary flex-1 flex items-center justify-center gap-2"
+                      className="btn-primary flex-1 justify-center"
                     >
                       <Lock className="w-4 h-4" /> Encrypt & Send
                     </button>
@@ -268,9 +268,9 @@ export default function SendPage() {
             {store.step === "encrypting" && (
               <motion.div key="encrypting" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
                 <div className="card text-center py-16">
-                  <Loader2 className="w-12 h-12 text-[#6366f1] mx-auto mb-6 animate-spin" />
-                  <h2 className="text-xl font-semibold mb-2">Encrypting & Uploading</h2>
-                  <p className="text-sm text-[var(--color-text-secondary)]">
+                  <Loader2 className="w-12 h-12 text-indigo-500 mx-auto mb-6 animate-spin" />
+                  <h2 className="text-xl font-semibold text-zinc-900 mb-2">Encrypting & Uploading</h2>
+                  <p className="text-sm text-zinc-500">
                     Deriving key with PBKDF2 (600k iterations)...
                   </p>
                 </div>
@@ -282,64 +282,64 @@ export default function SendPage() {
               <motion.div key="success" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
                 <div className="card">
                   <div className="text-center mb-6">
-                    <div className="w-16 h-16 rounded-full bg-[rgba(16,185,129,0.15)] flex items-center justify-center mx-auto mb-4">
-                      <CheckCircle2 className="w-8 h-8 text-[#10b981]" />
+                    <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-4">
+                      <CheckCircle2 className="w-8 h-8 text-emerald-500" />
                     </div>
-                    <h2 className="text-xl font-semibold mb-2">Transfer Created!</h2>
-                    <p className="text-sm text-[var(--color-text-secondary)]">
+                    <h2 className="text-xl font-semibold text-zinc-900 mb-2">Transfer Created!</h2>
+                    <p className="text-sm text-zinc-500">
                       Share the token below with the destination operator.
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-[var(--color-bg-input)] border border-[var(--color-border)] mb-4">
-                    <label className="block text-xs text-[var(--color-text-muted)] mb-2 uppercase tracking-wider font-medium">
+                  <div className="p-4 rounded-lg bg-zinc-50 border border-zinc-200 mb-4">
+                    <label className="block text-xs text-zinc-400 mb-2 uppercase tracking-wider font-medium">
                       Transfer Token (Single-Use)
                     </label>
                     <div className="flex items-center gap-2">
-                      <code className="flex-1 text-sm font-mono text-[#14f195] break-all">
+                      <code className="flex-1 text-sm font-mono text-indigo-600 break-all">
                         {store.transferToken}
                       </code>
-                      <button onClick={store.copyToken} className="p-2 rounded-lg hover:bg-[rgba(99,102,241,0.1)] shrink-0">
-                        {store.copied ? <Check className="w-4 h-4 text-[#10b981]" /> : <Copy className="w-4 h-4 text-[var(--color-text-muted)]" />}
+                      <button onClick={store.copyToken} className="p-2 rounded-lg hover:bg-zinc-100 shrink-0 transition-colors">
+                        {store.copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4 text-zinc-400" />}
                       </button>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 mb-6">
-                    <div className="p-3 rounded-lg bg-[var(--color-bg-input)] border border-[var(--color-border)]">
-                      <p className="text-xs text-[var(--color-text-muted)] mb-1">Transfer ID</p>
-                      <p className="text-xs font-mono text-[var(--color-text-secondary)] truncate">{store.transferId}</p>
+                    <div className="p-3 rounded-lg bg-zinc-50 border border-zinc-200">
+                      <p className="text-xs text-zinc-400 mb-1">Transfer ID</p>
+                      <p className="text-xs font-mono text-zinc-600 truncate">{store.transferId}</p>
                     </div>
-                    <div className="p-3 rounded-lg bg-[var(--color-bg-input)] border border-[var(--color-border)]">
-                      <p className="text-xs text-[var(--color-text-muted)] mb-1 flex items-center gap-1">
+                    <div className="p-3 rounded-lg bg-zinc-50 border border-zinc-200">
+                      <p className="text-xs text-zinc-400 mb-1 flex items-center gap-1">
                         <Clock className="w-3 h-3" /> Expires
                       </p>
-                      <p className="text-xs font-mono text-[var(--color-text-secondary)]">
+                      <p className="text-xs font-mono text-zinc-600">
                         {store.expiresAt ? new Date(store.expiresAt).toLocaleTimeString() : "—"}
                       </p>
                     </div>
                   </div>
 
                   <div className="space-y-3 mb-6">
-                    <div className="flex items-start gap-3 p-3 rounded-lg bg-[rgba(245,158,11,0.08)] border border-[rgba(245,158,11,0.2)]">
-                      <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                      <p className="text-xs text-amber-200/80">
+                    <div className="flex items-start gap-3 p-3 rounded-lg bg-amber-50 border border-amber-200">
+                      <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                      <p className="text-xs text-amber-700">
                         This token works <strong>once</strong>. After download, it&apos;s permanently deleted.
                       </p>
                     </div>
-                    <div className="flex items-start gap-3 p-3 rounded-lg bg-[rgba(99,102,241,0.05)] border border-[rgba(99,102,241,0.15)]">
-                      <Lock className="w-4 h-4 text-[#6366f1] shrink-0 mt-0.5" />
-                      <p className="text-xs text-[var(--color-text-secondary)]">
+                    <div className="flex items-start gap-3 p-3 rounded-lg bg-indigo-50 border border-indigo-100">
+                      <Lock className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
+                      <p className="text-xs text-indigo-700">
                         The recipient needs the <strong>same passphrase</strong> to decrypt.
                       </p>
                     </div>
                   </div>
 
                   <div className="flex gap-3">
-                    <button onClick={store.reset} className="btn-secondary flex-1">New Transfer</button>
+                    <button onClick={store.reset} className="btn-secondary flex-1 justify-center">New Transfer</button>
                     <a
                       href={`/transfer/status?token=${encodeURIComponent(store.transferToken)}`}
-                      className="btn-primary flex-1 flex items-center justify-center gap-2"
+                      className="btn-primary flex-1 justify-center"
                     >
                       Check Status <ArrowRight className="w-4 h-4" />
                     </a>
