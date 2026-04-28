@@ -130,12 +130,20 @@ pnpm run start
 - **Ephemeral Storage**: Transfers are inherently ephemeral. A background cron job in Rust actively scrubs expired transfers from the database.
 - **HMAC Tokens**: Transfer tokens issued to users are never stored in plaintext in the database; they are hashed using `HMAC-SHA256` preventing a database leak from exposing active tokens.
 
+### Cryptography Edge Cases & Supply Chain Security
+When selecting the cryptographic stack, we evaluated bleeding-edge memory-hard functions (like Argon2id) and Solana-native encryption (like TweetNaCl `XSalsa20-Poly1305`). However, adopting these would require importing third-party WebAssembly (WASM) or NPM packages into the browser.
+* **The Supply Chain Edge Case**: In Web3, a malicious update to a cryptography NPM dependency is a severe vulnerability. By exclusively using the browser's native **Web Crypto API** (`AES-256-GCM` and `PBKDF2`), we achieve zero-dependency encryption. It is impossible for a compromised NPM package to hijack the cryptographic operations.
+* **The Offline Brute-Force Edge Case**: While PBKDF2 is theoretically less resistant to offline GPU cracking than Argon2id, we mitigate this edge case entirely at the architectural level. By enforcing strict time-based token expiry (maximum 60 minutes) and single-use burn mechanics, an attacker does not have the timeframe required to execute an offline brute-force attack on a leaked database blob.
+
 ---
 
 ## Key Architectural Decisions
 
-### 1. Rust for the Backend
-Memory safety and predictable performance. `Actix-Web` easily handles high-throughput requests, while `sqlx` provides compile-time query verification for the SQLite database, entirely eliminating SQL injection risks.
+### 1. Rust vs. Node.js for the Backend
+We explicitly chose Rust (`actix-web`) over Node.js to mitigate severe runtime edge cases:
+* **Absolute Memory Safety**: Node.js relies on an interpreter and garbage collection, making it susceptible to prototype pollution via malicious NPM packages or runtime memory leaks. Rust guarantees memory safety at compile-time, effectively eliminating the edge case of a buffer overflow exposing decrypted or encrypted validator blobs in server memory.
+* **Compile-Time SQL Verification**: In Node.js, ORM edge cases or malformed queries often panic at runtime. We use the Rust `sqlx` library, which connects to the SQLite database *during compilation*. A bad SQL query will fail the build, ensuring zero SQL-related runtime panics in production.
+* **Solana Ecosystem Alignment**: Since the Solana client and smart contracts are written in Rust, using Rust on the backend ensures seamless integration with native Solana cryptographic primitives if future expansion is required.
 
 ### 2. SQLite for Storage
 Given that transfers are ephemeral and immediately deleted upon download, a heavy persistent database like PostgreSQL was unnecessary. SQLite provides atomic transactions and zero-configuration deployment, perfect for this isolated use-case.
