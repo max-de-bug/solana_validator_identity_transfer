@@ -24,12 +24,23 @@ pub async fn execute(api_client: &ApiClient, token: String, output_path: PathBuf
     let decrypted_data = Crypto::decrypt(&encrypted_payload, &nonce, &salt, &password)
         .context("Failed to decrypt payload. Incorrect password or corrupted data.")?;
 
-    std::fs::write(&output_path, &decrypted_data)
+    if decrypted_data.len() != 64 {
+        anyhow::bail!(
+            "Decrypted data is not a valid Solana keypair (expected 64 bytes, got {})",
+            decrypted_data.len()
+        );
+    }
+
+    // Save as JSON array (standard Solana format)
+    let json_data = serde_json::to_string(&decrypted_data)
+        .context("Failed to serialize keypair to JSON")?;
+
+    std::fs::write(&output_path, json_data)
         .context("Failed to write decrypted keypair to file")?;
 
     println!("✅ Encrypted payload downloaded from secure relay.");
-    println!("✅ Payload successfully decrypted.");
-    println!("✅ Keypair saved to {:?}", output_path);
+    println!("✅ Payload successfully decrypted and validated (64 bytes).");
+    println!("✅ Keypair saved to {:?} in JSON format.", output_path);
 
     Ok(())
 }

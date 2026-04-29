@@ -23,16 +23,34 @@ pub async fn execute(
         .interact()
         .context("Failed to read password")?;
 
-    println!("⏳ Encrypting and uploading...");
+    println!("⏳ Reading and validating keypair...");
 
-    let file_data = std::fs::read(&file_path)?;
-    let crypto_res = Crypto::encrypt(&file_data, &password)?;
+    let file_data = std::fs::read(&file_path)
+        .with_context(|| format!("Failed to read file: {:?}", file_path))?;
+
+    // Strategy: Try to parse as JSON array first, then fallback to raw bytes
+    let keypair_bytes: Vec<u8> = if let Ok(json_array) = serde_json::from_slice::<Vec<u8>>(&file_data) {
+        println!("📝 Detected Solana JSON keypair format.");
+        json_array
+    } else {
+        println!("📂 Detected raw binary keypair format.");
+        file_data
+    };
+
+    if keypair_bytes.len() != 64 {
+        anyhow::bail!(
+            "Invalid keypair size: expected 64 bytes, got {}. Solana keypairs must be exactly 64 bytes.",
+            keypair_bytes.len()
+        );
+    }
+
+    let crypto_res = Crypto::encrypt(&keypair_bytes, &password)?;
 
     let req = InitiateTransferRequest {
         encrypted_payload: BASE64.encode(&crypto_res.ciphertext),
         nonce: BASE64.encode(&crypto_res.nonce),
         salt: BASE64.encode(&crypto_res.salt),
-        source_pubkey: None, // Omitting pubkey extraction in CLI for now
+        source_pubkey: None, // Omitting pubkey extraction for now
         expiry_minutes: Some(expiry_minutes),
     };
 
