@@ -14,6 +14,9 @@ export const metadata: Metadata = {
     "Encrypted",
     "Superteam Ukraine",
   ],
+  icons: {
+    icon: "/icon.png",
+  },
   openGraph: {
     title: "Solana Validator Identity Transfer",
     description:

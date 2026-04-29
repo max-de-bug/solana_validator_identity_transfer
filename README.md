@@ -1,10 +1,14 @@
 # Solana Validator Identity Transfer
 
+<div align="center">
+  <img src="assets/hero.png" alt="ValidatorShift Platform" width="100%" />
+</div>
+
 ---
 
 A production-ready, **secure full-stack application** that simplifies the process of transferring a Solana validator's identity between different servers. Built for the Superteam Ukraine community.
 
-Built with **Rust** (Actix-Web, sqlx), **Next.js** (App Router, Tailwind CSS), and the **Web Crypto API** for zero-knowledge client-side encryption.
+Built with **Rust** (Actix-Web, sqlx, clap), **Next.js** (App Router, Tailwind CSS), and the **Web Crypto API** for zero-knowledge client-side encryption. Includes a **Rust CLI** for headless environments.
 
 ---
 
@@ -37,26 +41,27 @@ Built with **Rust** (Actix-Web, sqlx), **Next.js** (App Router, Tailwind CSS), a
 ## Architecture Overview
 
 ```text
-┌───────────────────────────────────────────────────────────────────────┐
-│                           Monorepo Workspace                          │
-│                                                                       │
-│  ┌─────────────────────────┐         ┌─────────────────────────────┐  │
-│  │   Next.js Frontend      │         │   Rust Actix-Web Backend    │  │
-│  │                         │         │                             │  │
-│  │  ┌───────────────────┐  │         │  ┌───────────────────────┐  │  │
-│  │  │ Web Crypto API    │  │  HTTPS  │  │ REST API (Handlers)   │  │  │
-│  │  │ (AES-GCM/PBKDF2)  ├──┼─────────┼─►│ Rate Limiting         │  │  │
-│  │  └───────────────────┘  │         │  └──────────┬────────────┘  │  │
-│  │                         │         │             │               │  │
-│  │  ┌───────────────────┐  │         │  ┌──────────▼────────────┐  │  │
-│  │  │ React UI Components│ │         │  │ SQLite Database       │  │  │
-│  │  │ (Framer Motion)    │ │         │  │ (Encrypted Blobs,     │  │  │
-│  │  └───────────────────┘  │         │  │  Audit Logs)          │  │  │
-│  └─────────────────────────┘         │  └───────────────────────┘  │  │
-│               │                      └─────────────┬───────────────┘  │
-└───────────────┼────────────────────────────────────┼──────────────────┘
-                │                                    │
-          Browser Client                      Solana Mainnet RPC
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                             Monorepo Workspace                              │
+│                                                                             │
+│  ┌─────────────────────────┐               ┌─────────────────────────────┐  │
+│  │   Next.js Frontend      │               │   Rust Actix-Web Backend    │  │
+│  │  ┌───────────────────┐  │               │  ┌───────────────────────┐  │  │
+│  │  │ Web Crypto API    │  │     HTTPS     │  │ REST API (Handlers)   │  │  │
+│  │  │ (AES-GCM/PBKDF2)  ├──┼───────┬───────┼─►│ Rate Limiting         │  │  │
+│  │  └───────────────────┘  │       │       │  └──────────┬────────────┘  │  │
+│  └─────────────────────────┘       │       │             │               │  │
+│                                    │       │  ┌──────────▼────────────┐  │  │
+│  ┌─────────────────────────┐       │       │  │ SQLite Database       │  │  │
+│  │   Rust CLI Tool         │       │       │  │ (Encrypted Blobs,     │  │  │
+│  │  ┌───────────────────┐  │       │       │  │  Audit Logs)          │  │  │
+│  │  │ rust-crypto       │  │       │       │  └───────────────────────┘  │  │
+│  │  │ (AES-GCM/PBKDF2)  ├──┼───────┘       └─────────────┬───────────────┘  │
+│  │  └───────────────────┘  │                             │                  │
+│  └─────────────────────────┘                             │                  │
+└──────────────────────────────────────────────────────────┼──────────────────┘
+                                                           │
+                                                   Solana Mainnet RPC
 ```
 
 1. **Upload & Encrypt** — The user drops `validator-keypair.json` into the browser. The frontend derives a key via PBKDF2 and encrypts the JSON array using AES-256-GCM.
@@ -101,6 +106,19 @@ pnpm run build
 
 # Starts both services concurrently
 pnpm run start
+```
+
+### 4. CLI Tool (Headless Servers)
+For validator operators preferring the terminal:
+```bash
+cd cli
+cargo build --release
+
+# Send identity
+./target/release/validator-shift-cli send --file /path/to/validator-keypair.json
+
+# Receive identity
+./target/release/validator-shift-cli receive --token <YOUR_TOKEN> --output ./validator-keypair.json
 ```
 
 ---
@@ -168,7 +186,14 @@ Provides a secure environment with standard React patterns. We strictly enforce 
 ```text
 solana-validator-identity-transfer/
 ├── package.json               # Workspace root (concurrently scripts)
-├── frontend/
+├── cli/                       # Rust CLI Tool
+│   ├── Cargo.toml
+│   └── src/
+│       ├── main.rs            # clap arg parser
+│       ├── api.rs             # reqwest client
+│       ├── crypto.rs          # AES-256-GCM / PBKDF2 logic
+│       └── commands/          # send & receive subcommands
+├── frontend/                  # Next.js Web App
 │   ├── next.config.ts
 │   ├── src/
 │   │   ├── app/               # Next.js App Router (Send, Receive, Status)
@@ -177,7 +202,7 @@ solana-validator-identity-transfer/
 │   │       ├── api.ts         # Strictly typed API client
 │   │       └── crypto.ts      # Web Crypto API wrappers
 │   └── package.json
-└── backend/
+└── backend/                   # Rust Actix-Web API
     ├── Cargo.toml
     ├── migrations/            # sqlx SQLite migrations
     ├── src/

@@ -8,6 +8,7 @@ node_modules/
 # ========================
 # Rust
 backend/target/
+cli/target/
 
 # Next.js
 frontend/.next/

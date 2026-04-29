@@ -2,8 +2,8 @@ use aes_gcm::{
     aead::{Aead, KeyInit},
     Aes256Gcm, Nonce,
 };
-use argon2::{password_hash::SaltString, Argon2, PasswordHasher};
 use hmac::{Hmac, Mac};
+use pbkdf2::pbkdf2_hmac;
 use rand::RngCore;
 use sha2::Sha256;
 
@@ -11,26 +11,17 @@ use crate::error::AppError;
 
 type HmacSha256 = Hmac<Sha256>;
 
-/// Derives an AES-256 key from a passphrase using Argon2id.
-/// Returns the derived 32-byte key and the salt used.
+/// Number of PBKDF2 iterations — matches the frontend Web Crypto API
+/// and CLI configurations exactly for cross-client interoperability.
+const PBKDF2_ITERATIONS: u32 = 600_000;
+
+/// Derives an AES-256 key from a passphrase using PBKDF2-SHA256.
+/// Uses 600,000 iterations (OWASP recommended) to match the frontend
+/// and CLI key derivation, ensuring payloads encrypted by any client
+/// can be decrypted by any other client.
 pub fn derive_key_from_passphrase(passphrase: &str, salt: &[u8]) -> Result<[u8; 32], AppError> {
-    let argon2 = Argon2::default();
-    let salt_string = SaltString::encode_b64(salt)
-        .map_err(|e| AppError::EncryptionError(format!("Salt encoding error: {}", e)))?;
-
-    let hash = argon2
-        .hash_password(passphrase.as_bytes(), &salt_string)
-        .map_err(|e| AppError::EncryptionError(format!("Key derivation error: {}", e)))?;
-
-    let hash_output = hash
-        .hash
-        .ok_or_else(|| AppError::EncryptionError("No hash output".to_string()))?;
-
-    let hash_bytes = hash_output.as_bytes();
     let mut key = [0u8; 32];
-    let copy_len = std::cmp::min(hash_bytes.len(), 32);
-    key[..copy_len].copy_from_slice(&hash_bytes[..copy_len]);
-
+    pbkdf2_hmac::<Sha256>(passphrase.as_bytes(), salt, PBKDF2_ITERATIONS, &mut key);
     Ok(key)
 }
 
