@@ -19,7 +19,7 @@ struct Cli {
         short,
         long,
         env = "VALIDATOR_SHIFT_API_URL",
-        default_value = "http://localhost:8080/api/v1"
+        default_value = "https://solana-validator-identity-transfer.onrender.com/api/v1"
     )]
     api_url: String,
 }

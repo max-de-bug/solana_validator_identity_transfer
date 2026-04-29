@@ -13,10 +13,8 @@ pub struct InitiateTransferRequest {
 
 #[derive(Deserialize)]
 pub struct InitiateTransferResponse {
-    pub transfer_id: String,
     pub token: String,
     pub expires_at: String,
-    pub status: String,
 }
 
 #[derive(Deserialize)]
@@ -24,8 +22,6 @@ pub struct DownloadTransferResponse {
     pub encrypted_payload: String,
     pub nonce: String,
     pub salt: String,
-    pub source_pubkey: Option<String>,
-    pub created_at: String,
 }
 
 pub struct ApiClient {
