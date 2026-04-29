@@ -45,6 +45,20 @@ export const receiveFormSchema = z.object({
 export type ReceiveFormInput = z.infer<typeof receiveFormSchema>;
 
 /**
+ * Schema for checking transfer status.
+ */
+export const statusTokenSchema = z.object({
+  token: z
+    .string()
+    .trim()
+    .min(1, "Transfer token is required")
+    .regex(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
+      "Token must be a valid UUID"
+    ),
+});
+
+/**
  * Schema for keypair byte validation.
  * Ensures the parsed JSON array is exactly 64 bytes with valid byte values.
  */

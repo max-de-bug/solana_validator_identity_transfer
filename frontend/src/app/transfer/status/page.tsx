@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -9,40 +9,37 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import api, { TransferStatusResponse } from "@/lib/api";
+import { useStatusStore } from "@/stores/useStatusStore";
 
 function StatusContent() {
   const searchParams = useSearchParams();
-  const [token, setToken] = useState(searchParams.get("token") || "");
-  const [status, setStatus] = useState<TransferStatusResponse | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [revoking, setRevoking] = useState(false);
+  const {
+    token,
+    status,
+    loading,
+    error,
+    revoking,
+    setToken,
+    setError,
+    checkStatus,
+    revokeTransfer,
+    reset,
+  } = useStatusStore();
 
+  // Reset store on unmount
+  useEffect(() => {
+    return () => reset();
+  }, [reset]);
+
+  // Handle token from URL
   useEffect(() => {
     const t = searchParams.get("token");
-    if (t && !status) { setToken(t); checkStatus(t); }
-  }, [searchParams]);
+    if (t && !status) { checkStatus(t); }
+  }, [searchParams, status, checkStatus]);
 
-  const checkStatus = async (t?: string) => {
-    const tokenVal = (t || token).trim();
-    if (!tokenVal) { setError("Please enter a transfer token"); return; }
-    setError(""); setLoading(true);
-    try {
-      const data = await api.getTransferStatus(tokenVal);
-      setStatus(data);
-    } catch (err: any) { setError(err.message || "Failed to check status"); }
-    finally { setLoading(false); }
-  };
-
-  const revokeTransfer = async () => {
-    if (!token.trim() || !confirm("Are you sure? This cannot be undone.")) return;
-    setRevoking(true); setError("");
-    try {
-      await api.revokeTransfer(token.trim());
-      await checkStatus();
-    } catch (err: any) { setError(err.message); }
-    finally { setRevoking(false); }
+  const handleRevoke = async () => {
+    if (!confirm("Are you sure? This cannot be undone.")) return;
+    await revokeTransfer();
   };
 
   const getStatusBadge = (s: string, expired: boolean) => {
@@ -142,7 +139,7 @@ function StatusContent() {
                           <RefreshCw className="w-4 h-4" /> Refresh
                         </button>
                         {status.status === "pending" && !status.is_expired && (
-                          <button onClick={revokeTransfer} disabled={revoking} className="btn-danger flex-1 flex items-center justify-center gap-2">
+                          <button onClick={handleRevoke} disabled={revoking} className="btn-danger flex-1 flex items-center justify-center gap-2">
                             {revoking ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                             Revoke
                           </button>

@@ -21,12 +21,12 @@ export default function Footer() {
             <p className="text-xs text-zinc-400 mt-4">
               Built by{" "}
               <a
-                href="https://superteam.fun"
+                href="https://x.com/CryptoMax_07"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-indigo-500 hover:text-indigo-600 font-medium transition-colors"
               >
-                Superteam Ukraine
+                Connor
               </a>
             </p>
           </div>
@@ -101,10 +101,6 @@ export default function Footer() {
           <p className="text-xs text-zinc-400">
             © {new Date().getFullYear()} ValidatorShift. Open source under MIT License.
           </p>
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse-dot" />
-            <span className="text-xs text-zinc-500 font-medium">Mainnet</span>
-          </div>
         </div>
       </div>
     </footer>
